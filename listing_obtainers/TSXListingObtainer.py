@@ -22,7 +22,7 @@ class TSXListingObtainer(ListingObtainer):
         super().__init__()
         self.amount_to_obtain = amount_to_obtain
 
-    def obtain(self) -> pd.DataFrame:
+    def obtain(self, addTOToEndOfTickers=False) -> pd.DataFrame:
         self.listings = pd.DataFrame(self.template)
 
         with urllib.request.urlopen("https://www.tsx.com/json/company-directory/search/tsx/.*") as url:
@@ -32,7 +32,12 @@ class TSXListingObtainer(ListingObtainer):
                 if 0 < self.amount_to_obtain <= i:
                     break
 
-                df2 = pd.DataFrame({"Ticker": [data["results"][i]["symbol"] + ".TO"]})
+                if addTOToEndOfTickers:
+                    df2 = pd.DataFrame({"Ticker": [data["results"][i]["symbol"] + ".TO"]})
+                else:
+                    df2 = pd.DataFrame(
+                        {"Ticker": [data["results"][i]["symbol"]]})
+
                 self.listings = self.listings.append(df2, ignore_index=True)
 
         return self.listings

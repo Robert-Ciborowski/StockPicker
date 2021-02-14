@@ -28,21 +28,20 @@ class TSVListingObtainer(ListingObtainer):
         self.amount_to_obtain = amount_to_obtain
         self.url = "https://tmxinfoservices.com/files/indices/JX_constituents.csv"
 
-    def obtain(self, addTSVToEndOfTickers=False) -> pd.DataFrame:
+    def obtain(self, addVToEndOfTickers=False) -> pd.DataFrame:
         tickers = []
 
         with requests.Session() as s:
             download = s.get(self.url)
-
             decoded_content = download.content.decode('utf-8')
 
             cr = csv.reader(decoded_content.splitlines(), delimiter=',')
             my_list = list(cr)
-            for row in my_list[4:]:
-                if addTSVToEndOfTickers:
-                    tickers.append(row[0] + ".TSV")
+            for row in my_list[5:]:
+                if addVToEndOfTickers:
+                    tickers.append(row[1] + ".V")
                 else:
-                    tickers.append(row[0])
+                    tickers.append(row[1])
 
         self.listings = pd.DataFrame({"Ticker": tickers})
         return self.listings

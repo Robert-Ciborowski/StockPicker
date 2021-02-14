@@ -23,16 +23,21 @@ class NASDAQListingObtainer(ListingObtainer):
     def __init__(self, amount_to_obtain=-1):
         super().__init__()
         self.amount_to_obtain = amount_to_obtain
+        self._temp_file_name = "nasdaqlisted.txt"
 
-    def obtain(self) -> pd.DataFrame:
+    def obtain(self, deleteTempFile=True) -> pd.DataFrame:
         self._write_listings_to_file()
         self._get_listings_from_file()
+
+        if deleteTempFile:
+            self._delete_temp_file()
+
         return pd.DataFrame(self.template)
 
     def _write_listings_to_file(self):
         with ftplib.FTP('ftp.nasdaqtrader.com') as ftp:
             file_orig = '/SymbolDirectory/nasdaqlisted.txt'
-            file_copy = 'nasdaqlisted.txt'
+            file_copy = self._temp_file_name
 
             try:
                 ftp.login()
@@ -55,7 +60,7 @@ class NASDAQListingObtainer(ListingObtainer):
                     os.remove(file_copy)
 
     def _get_listings_from_file(self):
-        with open('nasdaqlisted.txt', mode='r') as csv_file:
+        with open(self._temp_file_name, mode='r') as csv_file:
             csv_reader = csv.DictReader(csv_file, delimiter='|')
             line_count = 0
 
@@ -76,3 +81,9 @@ class NASDAQListingObtainer(ListingObtainer):
                     break
 
             # print(f'Processed {line_count} lines with csv reader.')
+
+    def _delete_temp_file(self):
+        if os.path.exists(self._temp_file_name):
+            os.remove(self._temp_file_name)
+        else:
+            print("Tried to delete", self._temp_file_name + ", but it dissapeared!?")

@@ -148,8 +148,8 @@ import yfinance as yf
 # 'category': None, 'fiveYearAverageReturn': None, 'regularMarketPrice':
 # 0.067, 'logo_url': 'https://logo.clearbit.com/tlss-inc.com'}
 
-fdv = yf.Ticker("FD.V")
-print(fdv.info)
+# fdv = yf.Ticker("FD.V")
+# print(fdv.info)
 
 # Information that we get: {'zip': 'L4B 1G8', 'sector': 'Technology',
 # 'longBusinessSummary': 'Facedrive Inc. operates as a ride-sharing company
@@ -202,3 +202,12 @@ print(fdv.info)
 # 'impliedSharesOutstanding': None, 'category': None,
 # 'fiveYearAverageReturn': None, 'regularMarketPrice': 45.99, 'logo_url':
 # 'https://logo.clearbit.com/facedrive.com'}
+
+
+
+msft = yf.Ticker("MSFT")
+info = msft.info
+
+for key, value in info.items():
+    print(key, ": ", type(value))
+

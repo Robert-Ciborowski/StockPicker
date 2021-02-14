@@ -20,13 +20,27 @@ class StockFilter:
         self.filters.append((valuesToFilter, lambdaFilter))
         return len(self.filters) - 1
 
-    def filter(self, ticker: str) -> bool:
+    def filter(self, ticker: str):
+        """
+        Filter out this stock. Return the values that the filters
+        were given but return None if the stock didn't pass all filters.
+
+        :param ticker: e.g. TLSS
+        :return: bool, Dict/None
+        """
         yfTicker = yf.Ticker(ticker)
+        dataToReturn = {}
 
         if yfTicker is None:
             print("Could not find info on ticker ", ticker, " from Yahoo!")
+            return False, None
 
-        info = yfTicker.info
+        try:
+            info = yfTicker.info
+        except Exception as e:
+            print("Filter got an error when obtaining data for " + ticker + ":")
+            print(e)
+            return False, None
 
         for tuple in self.filters:
             valuesToFilter = tuple[0]
@@ -44,13 +58,37 @@ class StockFilter:
             try:
                 returnValue = lambdaFilter(inputValues)
             except:
-                print("Got an error when filtering on ", ticker, " with inputs ",
-                      str(inputValues), ". Assuming the filter returned false.")
+                print("Got an error when filtering on", ticker, "with inputs",
+                      str(inputValues) + ". Assuming the filter returned false.")
 
             if not returnValue:
-                return False
+                    return False, None
 
-        return True
+            for i in range(len(valuesToFilter)):
+                dataToReturn[valuesToFilter[i]] = inputValues[i]
+
+        return True, dataToReturn
+
+    def filterList(self, tickers: List):
+        """
+        Runs filters on a list of tickers. Returns tickers that passed the
+        filters, as well as their data that was given to the filters.
+
+        :param tickers: e.g. ["TLSS", "TNXP"]
+        :return: list of passed tickers, list of Dicts with data
+        """
+        returnList = []
+        dataToReturn = []
+
+        for ticker in tickers:
+            print("Filtering", ticker, "...")
+            success, data = self.filter(ticker)
+
+            if success:
+                returnList.append(ticker)
+                dataToReturn.append(data)
+
+        return returnList, dataToReturn
 
     def removeFilter(self, position: int):
         """

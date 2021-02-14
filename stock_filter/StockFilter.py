@@ -38,7 +38,7 @@ class StockFilter:
         try:
             info = yfTicker.info
         except Exception as e:
-            print("Filter got an error when obtaining data for " + ticker + ":")
+            print("Filter got a yahoo finance error when obtaining data for " + ticker + ":")
             print(e)
             return False, None
 

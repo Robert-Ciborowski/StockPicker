@@ -1,8 +1,8 @@
-from listing_obtainers.NASDAQListingObtainer import NASDAQListingObtainer
+from listing_obtainers.TSXListingObtainer import TSXListingObtainer
 from stock_filter.StockFilter import StockFilter
 
-obtainer = NASDAQListingObtainer()
-df = obtainer.obtain()
+obtainer = TSXListingObtainer()
+df = obtainer.obtain(addTOToEndOfTickers=True)
 
 filter = StockFilter()
 # This filter will filter based on dividends.

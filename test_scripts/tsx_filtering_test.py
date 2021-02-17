@@ -12,16 +12,26 @@ filterID = filter.addFilter(["yield", "dividendYield"], filterFunction)
 
 # This does the filtering, 100 tickers at a time.
 tickerList = df["Ticker"].tolist()
+finalResults = []
+finalData = []
+incrementAmount = 50
 
-for i in range(0, len(tickerList), 100):
-    if i + 100 > len(tickerList):
+for i in range(0, len(tickerList), incrementAmount):
+    if i + incrementAmount > len(tickerList):
         end = len(tickerList)
     else:
-        end = i + 100
+        end = i + incrementAmount
     results, data = filter.filterList(tickerList[i:end])
 
+    print("Results over the last", incrementAmount, "tickers:")
     for i in range(len(results)):
         print("->", results[i])
         print(data[i])
 
+    finalResults += results
+    finalData += data
 
+print("Final results:")
+for i in range(len(finalResults)):
+    print("->", finalResults[i])
+    print(finalData[i])

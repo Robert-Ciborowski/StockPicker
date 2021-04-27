@@ -13,7 +13,6 @@ if __name__ == "__main__":
     obtainer = TSVListingObtainer()
     df = obtainer.obtain()
     print(df)
-
     # obtainer = NASDAQListingObtainer()
     # df = obtainer.obtain()
     # print(df)
